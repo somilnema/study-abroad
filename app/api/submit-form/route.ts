@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import FormData from '@/models/FormData'
 import { sendFormSubmissionEmail } from '@/lib/email'
+export const dynamic = "force-dynamic"
+
 
 export async function POST(request: NextRequest) {
   try {

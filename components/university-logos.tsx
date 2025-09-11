@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 
 export function UniversityLogos() {
   const [hoveredPanel, setHoveredPanel] = useState<number | null>(null)
@@ -38,8 +38,13 @@ export function UniversityLogos() {
     ]
   ]
 
+  // Memoize the duplicated panels for better performance
+  const duplicatedPanels = useMemo(() => {
+    return universities.map(panel => [...panel, ...panel, ...panel, ...panel]) // Triple for seamless loop
+  }, [universities])
+
   return (
-    <section className="bg-white py-16 lg:py-24">
+    <section id="universities" className="bg-white py-16 lg:py-24">
       <div className="w-full">
         <div className="text-center mb-16 px-4 sm:px-6 lg:px-8 xl:px-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4">
@@ -48,7 +53,7 @@ export function UniversityLogos() {
         </div>
 
         <div className="space-y-12">
-          {universities.map(
+          {duplicatedPanels.map(
             (panel, panelIndex) =>
               panel.length > 0 && (
                 <div
@@ -65,10 +70,9 @@ export function UniversityLogos() {
                       width: `${panel.length * 220}px`,
                     }}
                   >
-                    {/* Duplicate for smooth infinite scroll */}
-                    {[...panel, ...panel].map((university, index) => (
+                    {panel.map((university, index) => (
                       <div
-                        key={index}
+                        key={`${panelIndex}-${index}`}
                         className="flex justify-center items-center p-6 flex-shrink-0 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
                         style={{ width: "220px", height: "140px" }}
                       >
@@ -76,6 +80,8 @@ export function UniversityLogos() {
                           src={university.logo || "/placeholder.svg"}
                           alt={`${university.name} logo`}
                           className="h-20 w-auto object-contain transition-all duration-300 hover:scale-105"
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                     ))}

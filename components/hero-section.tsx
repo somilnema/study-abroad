@@ -61,7 +61,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="bg-white py-16 lg:py-24">
+    <section id="hero-form" className="bg-white py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Hero content */}
@@ -73,12 +73,10 @@ export function HeroSection() {
               Transform your academic aspirations into reality with expert guidance and proven strategies.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-                Get Started
-              </Button>
-              <Button variant="outline" className="border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-8 py-3 text-lg rounded-lg transition-all duration-300">
-                Learn More
-              </Button>
+             
+              
+              
+              
             </div>
           </div>
 

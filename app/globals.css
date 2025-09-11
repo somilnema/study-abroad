@@ -160,11 +160,11 @@
 
   /* Added infinite scroll animations for university logos */
   .animate-scroll-left {
-    animation: scroll-left 30s linear infinite;
+    animation: scroll-left 45s linear infinite;
   }
 
   .animate-scroll-right {
-    animation: scroll-right 30s linear infinite;
+    animation: scroll-right 45s linear infinite;
   }
 
   /* Profile form animations */
@@ -197,19 +197,19 @@
   }
 }
 
-/* ✅ Fixed keyframes for infinite loop scrolling */
+/* ✅ Fixed keyframes for seamless infinite loop scrolling */
 @keyframes scroll-left {
   0% {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(-33.333%);
   }
 }
 
 @keyframes scroll-right {
   0% {
-    transform: translateX(-50%);
+    transform: translateX(-33.333%);
   }
   100% {
     transform: translateX(0);

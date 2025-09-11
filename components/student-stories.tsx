@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState, useEffect, useMemo } from "react"
 import { Card } from "@/components/ui/card"
 import { Sparkles, Quote } from "lucide-react"
 
@@ -11,8 +11,8 @@ const stories = [
     university: "RWTH Aachen",
     program: "Full-Time MBA in Digitalization and Industrial Change",
     story: "I always thought my tech background might hold me back in MBA admissions. With their help, I learned how to position my skills as an asset—and that changed everything.",
-    image: "/testimonial/Sahil (1).jpg",
-    logo: "/logos/rwth-aachen.png",
+    image: "/testimonial/Sahil (1).png",
+    logo: "/images/rwth-aachen.png",
     
     help: [
       "Highlighted his tech-to-business transition with real-world projects.",
@@ -51,8 +51,8 @@ const stories = [
     university: "FAU Erlangen-Nürnberg",
     program: "MS in Data Science",
     story: "I didn't know how to bridge my academic record with industry demands. Their approach gave my application the practical edge it needed.",
-    image: "/testimonial/Arjun A.jpg",
-    logo: "/logos/fau-erlangen.png",
+    image: "/testimonial/Arjun A.png",
+    logo: "/images/neues-fau.png",
     help: [
       "Added research-based projects to showcase technical expertise.",
       "Recommended MOOCs to cover gaps in advanced statistics.",
@@ -64,7 +64,7 @@ const stories = [
     university: "Tampere University of Applied Sciences",
     program: "Diploma in Systemic Approach to Entrepreneurship",
     story: "I thought my unconventional background would be a barrier. Instead, it became my biggest strength after they helped me reframe it strategically.",
-    image: "/testimonial/Pankaj P..jpeg",
+    image: "/testimonial/Pankaj P.png",
     logo: "/logos/tampere-university.png",
     help: [
       "Positioned his entrepreneurial experiments as learning milestones.",
@@ -77,8 +77,8 @@ const stories = [
     university: "Georgia Tech",
     program: "Quantitative and Computational Finance",
     story: "For a program as competitive as Georgia Tech, clarity was key. They made sure my application reflected precision, focus, and ambition.",
-    image: "/testimonial/Naman.JPG",
-    logo: "/logos/georgia-tech.png",
+    image: "/testimonial/Naman.png",
+    logo: "/images/georgia-tech.png",
     help: [
       "Showcased rigorous math and programming skills with projects.",
       "Connected past internships to finance industry goals.",
@@ -115,19 +115,22 @@ export function StudentStoriesHorizontal() {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // Optimized card dimensions - adjusted for better visibility
-  const cardWidth = 550
-  const cardHeight = 600
-  const gap = 40
-  const totalContentWidth = stories.length * (cardWidth + gap) - gap
+  // Memoize expensive calculations
+  const { cardWidth, cardHeight, gap, totalContentWidth, totalScrollWidth } = useMemo(() => {
+    const cardWidth = 550
+    const cardHeight = 600
+    const gap = 40
+    const totalContentWidth = stories.length * (cardWidth + gap) - gap
+    const totalScrollWidth = Math.max(totalContentWidth - viewportWidth + 100, 0)
+    
+    return { cardWidth, cardHeight, gap, totalContentWidth, totalScrollWidth }
+  }, [viewportWidth])
 
-  // Scroll only enough so the last card is fully visible
-  const totalScrollWidth = Math.max(totalContentWidth - viewportWidth + 100, 0)
-
+  // Use a slower but complete scroll - ensure all cards are visible
   const x = useTransform(scrollYProgress, [0, 1], [0, -totalScrollWidth])
 
   return (
-    <section ref={targetRef} className="relative h-[220vh]">
+    <section id="success-stories" ref={targetRef} className="relative h-[600vh]">
       {/* Sticky container with proper spacing for heading */}
         <div className="sticky top-0 flex h-screen items-start overflow-hidden pt-8 pb-2">
           <div className="w-full">
@@ -138,11 +141,14 @@ export function StudentStoriesHorizontal() {
               </h2>
             </div>
             
-            <motion.div style={{ x }} className="flex space-x-10 pl-8">
+            <motion.div 
+              style={{ x, willChange: 'transform' }} 
+              className="flex space-x-10 pl-8"
+            >
           {stories.map((story, index) => (
             <Card
               key={index}
-              className="relative rounded-2xl shadow-lg border border-gray-200 bg-white flex-shrink-0 overflow-hidden"
+              className="relative rounded-2xl shadow-lg bg-white flex-shrink-0 overflow-hidden"
               style={{ width: `${cardWidth}px`, height: `${cardHeight}px` }}
             >
               <div className="p-6 h-full flex flex-col bg-white relative">
@@ -158,6 +164,8 @@ export function StudentStoriesHorizontal() {
                     src={story.logo}
                     alt={`${story.university} logo`}
                     className="h-14 object-contain flex-shrink-0"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
 
@@ -175,21 +183,23 @@ export function StudentStoriesHorizontal() {
                 </div>
 
                 {/* Quote */}
-                <div className="relative text-gray-700 text-base leading-relaxed pr-48 mt-auto">
+                <div className="relative text-gray-700 text-base leading-relaxed pr-56 mt-auto">
                   <Quote className="h-8 w-8 text-red-600 inline-block mr-3 mb-1" />
                   <span className="italic">{story.story}</span>
                 </div>
               </div>
 
               {/* Red corner background */}
-              <div className="absolute bottom-0 right-0 w-56 h-56 bg-red-600 clip-triangle"></div>
+              <div className="absolute bottom-0 right-0 w-60 h-60 bg-red-600" style={{clipPath: 'polygon(100% 0, 100% 100%, 0 100%)'}}></div>
               
               {/* Student photo */}
-              <div className="absolute bottom-3 right-3 w-48 h-100 z-10">
+              <div className="absolute bottom-0 right-0 w-70 h-100 z-10">
                 <img
                   src={story.image}
                   alt={story.name}
-                  className="w-full h-full object-cover rounded-lg shadow-lg"
+                  className="w-full h-full object-cover rounded-lg"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </Card>
@@ -199,12 +209,6 @@ export function StudentStoriesHorizontal() {
         </div>
       
 
-      {/* Triangle clipping for red corner */}
-      <style jsx>{`
-        .clip-triangle {
-          clip-path: polygon(100% 0, 100% 100%, 0 100%);
-        }
-      `}</style>
     </section>
   )
 }

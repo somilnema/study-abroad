@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState, useEffect, useMemo, useCallback, memo } from "react"
 
 const successData = [
   { university: "", logo: "/images/columbia-university.png", before: "4.28%", after: "26.8%", multiplier: "6x" },
@@ -18,6 +18,51 @@ const successData = [
   { university: "", logo: "/images/georgia-tech.png", before: "17%", after: "36%", multiplier: "2x" },
 ]
 
+// Memoized card component to prevent unnecessary re-renders
+const SuccessCard = memo(({ item, index }: { item: any, index: number }) => (
+  <div
+    key={index}
+    className="bg-white rounded-3xl p-10 shadow-lg w-[330px] h-[400px] flex-shrink-0 hover:shadow-2xl transition-all duration-700 ease-out border border-gray-100 hover:border-red-200 hover:scale-[1.02]"
+  >
+    {/* Top: Centered Logo */}
+    <div className="flex justify-center mb-8">
+      <img
+        src={item.logo || "/placeholder.svg"}
+        alt={`${item.university} logo`}
+        className="h-16 w-auto object-contain opacity-90"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    {/* Center: Big Multiplier */}
+    <div className="text-center mb-10">
+      <span className="text-red-600 font-bold text-5xl block mb-3">
+        {item.multiplier}
+      </span>
+      <p className="text-base text-gray-600 font-medium">Chances</p>
+    </div>
+
+    {/* Bottom: Rates */}
+    <div className="flex justify-between text-center mt-auto">
+      <div className="flex-1 px-2">
+        <p className="text-3xl font-bold text-gray-700 mb-3">{item.before}</p>
+        <p className="text-xs text-gray-500 leading-tight">
+          General student <br /> Admissions Rate
+        </p>
+      </div>
+      <div className="flex-1 px-2">
+        <p className="text-3xl font-bold text-green-600 mb-3">{item.after}</p>
+        <p className="text-xs text-gray-500 leading-tight">
+          Our Students <br /> Admissions Rate
+        </p>
+      </div>
+    </div>
+  </div>
+))
+
+SuccessCard.displayName = 'SuccessCard'
+
 export function SuccessRateSection() {
   const targetRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -29,40 +74,48 @@ export function SuccessRateSection() {
   const [viewportWidth, setViewportWidth] = useState(0)
   const [totalScrollWidth, setTotalScrollWidth] = useState(0)
 
+  // Memoize the update width function
+  const updateWidth = useCallback(() => {
+    setViewportWidth(window.innerWidth)
+  }, [])
+
   // Track viewport width
   useEffect(() => {
-    const updateWidth = () => setViewportWidth(window.innerWidth)
     updateWidth()
     window.addEventListener("resize", updateWidth)
     return () => window.removeEventListener("resize", updateWidth)
-  }, [])
+  }, [updateWidth])
+
+  // Memoize the calculate scroll width function
+  const calculateScrollWidth = useCallback(() => {
+    if (containerRef.current && viewportWidth > 0) {
+      // Get the actual scroll width of the content
+      const contentWidth = containerRef.current.scrollWidth
+
+      // Simple calculation: scroll the full content width minus viewport width
+      // This ensures we show all content without blank space
+      const scrollDistance = contentWidth - viewportWidth
+
+      setTotalScrollWidth(Math.max(scrollDistance, 200))
+    }
+  }, [viewportWidth])
 
   // Measure actual content width dynamically
   useEffect(() => {
-    const calculateScrollWidth = () => {
-      if (containerRef.current && viewportWidth > 0) {
-        // Get the actual scroll width of the content
-        const contentWidth = containerRef.current.scrollWidth
-
-        // Simple calculation: scroll the full content width minus viewport width
-        // This ensures we show all content without blank space
-        const scrollDistance = contentWidth - viewportWidth
-
-        setTotalScrollWidth(Math.max(scrollDistance, 200))
-      }
-    }
-
     // Calculate immediately and on resize
     calculateScrollWidth()
     const timeoutId = setTimeout(calculateScrollWidth, 100)
     return () => clearTimeout(timeoutId)
-  }, [viewportWidth, successData.length])
+  }, [calculateScrollWidth])
 
-  // Map scroll progress to horizontal motion
+  // Memoize the success data to prevent unnecessary re-renders
+  const memoizedSuccessData = useMemo(() => successData, [])
+
+  // Map scroll progress to horizontal motion - ensure all cards are visible
   const x = useTransform(scrollYProgress, [0, 1], [0, -totalScrollWidth])
 
   return (
-    <section ref={targetRef} className="relative h-[200vh] bg-white">
+    <section id="success-rates" ref={targetRef} className="relative h-[300vh] bg-white">
       {/* Guidance text at the top */}
       <div className="absolute top-16 left-0 right-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -81,47 +134,11 @@ export function SuccessRateSection() {
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
         <motion.div
           ref={containerRef}
-          style={{ x }}
+          style={{ x, willChange: 'transform' }}
           className="flex space-x-6 pl-10 pr-20"
         >
-          {successData.map((item, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-3xl p-10 shadow-lg w-[330px] h-[400px] flex-shrink-0 hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-red-200 hover:scale-[1.02]"
-            >
-              {/* Top: Centered Logo */}
-              <div className="flex justify-center mb-8">
-                <img
-                  src={item.logo || "/placeholder.svg"}
-                  alt={`${item.university} logo`}
-                  className="h-16 w-auto object-contain opacity-90"
-                />
-              </div>
-
-              {/* Center: Big Multiplier */}
-              <div className="text-center mb-10">
-                <span className="text-red-600 font-bold text-5xl block mb-3">
-                  {item.multiplier}
-                </span>
-                <p className="text-base text-gray-600 font-medium">Chances</p>
-              </div>
-
-              {/* Bottom: Rates */}
-              <div className="flex justify-between text-center mt-auto">
-                <div className="flex-1 px-2">
-                  <p className="text-3xl font-bold text-gray-700 mb-3">{item.before}</p>
-                  <p className="text-xs text-gray-500 leading-tight">
-                    General student <br /> Admissions Rate
-                  </p>
-                </div>
-                <div className="flex-1 px-2">
-                  <p className="text-3xl font-bold text-green-600 mb-3">{item.after}</p>
-                  <p className="text-xs text-gray-500 leading-tight">
-                    Our Students <br /> Admissions Rate
-                  </p>
-                </div>
-              </div>
-            </div>
+          {memoizedSuccessData.map((item, index) => (
+            <SuccessCard key={index} item={item} index={index} />
           ))}
         </motion.div>
         </div>

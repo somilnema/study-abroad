@@ -6,6 +6,7 @@ import { UniversityLogos } from "@/components/university-logos"
 import { SuccessRateSection } from "@/components/success-rate-section"
 import { StudentStoriesHorizontal } from "@/components/student-stories"
 import { FAQSection } from "@/components/faq-section"
+import { Footer } from "@/components/footer"
 
 export default function HomePage() {
   return (
@@ -19,6 +20,7 @@ export default function HomePage() {
         <SuccessRateSection />
         <StudentStoriesHorizontal />
         <FAQSection />
+        <Footer />
       </main>
     </div>
   )
