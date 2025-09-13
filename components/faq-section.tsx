@@ -35,19 +35,19 @@ const faqs = [
 
 export function FAQSection() {
   return (
-    <section className="bg-white py-16 lg:py-24">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="text-center mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4">Got <span className="text-red-600">Questions?</span> We've Got Answers</h2>
+    <section className="bg-white py-8 sm:py-12 lg:py-16">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-black mb-4">Got <span className="text-red-600">Questions?</span> We've Got Answers</h2>
         </div>
 
-        <Accordion type="single" collapsible className="space-y-4">
+        <Accordion type="single" collapsible className="space-y-3 sm:space-y-4">
           {faqs.map((faq, index) => (
             <AccordionItem key={index} value={`item-${index}`} className="bg-white rounded-lg shadow-lg border-2 border-red-200 hover:border-red-300 transition-all duration-300">
-              <AccordionTrigger className="px-6 py-4 text-left text-black font-semibold hover:no-underline">
+              <AccordionTrigger className="px-4 sm:px-6 py-3 sm:py-4 text-left text-black font-semibold hover:no-underline text-sm sm:text-base">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="px-6 pb-4 text-gray-600 whitespace-pre-line">{faq.answer}</AccordionContent>
+              <AccordionContent className="px-4 sm:px-6 pb-3 sm:pb-4 text-gray-600 whitespace-pre-line text-sm sm:text-base">{faq.answer}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

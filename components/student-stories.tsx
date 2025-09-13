@@ -64,7 +64,7 @@ const stories = [
     university: "Tampere University of Applied Sciences",
     program: "Diploma in Systemic Approach to Entrepreneurship",
     story: "I thought my unconventional background would be a barrier. Instead, it became my biggest strength after they helped me reframe it strategically.",
-    image: "/testimonial/Pankaj P.png",
+    image: "/testimonial/Pankaj (1).png",
     logo: "/logos/tampere-university.png",
     help: [
       "Positioned his entrepreneurial experiments as learning milestones.",
@@ -132,7 +132,7 @@ export function StudentStoriesHorizontal() {
   return (
     <section id="success-stories" ref={targetRef} className="relative h-[600vh]">
       {/* Sticky container with proper spacing for heading */}
-        <div className="sticky top-0 flex h-screen items-start overflow-hidden pt-8 pb-2">
+        <div className="sticky top-0 flex h-screen items-start overflow-hidden pt-10 pb-2">
           <div className="w-full">
             {/* Tagline */}
             <div className="text-center mb-6 px-8">
@@ -192,16 +192,20 @@ export function StudentStoriesHorizontal() {
               {/* Red corner background */}
               <div className="absolute bottom-0 right-0 w-60 h-60 bg-red-600" style={{clipPath: 'polygon(100% 0, 100% 100%, 0 100%)'}}></div>
               
-              {/* Student photo */}
-              <div className="absolute bottom-0 right-0 w-70 h-100 z-10">
-                <img
-                  src={story.image}
-                  alt={story.name}
-                  className="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+{/* Student photo */}
+<div className="absolute bottom-0 right-0 z-20 
+                w-44 h-60
+                md:w-56 md:h-76 
+                lg:w- lg:h-">
+  <img
+    src={story.image}
+    alt={story.name}
+    className="w-full h-full object-contain"  // keeps full image visible
+    loading="lazy"
+    decoding="async"
+  />
+</div>
+
             </Card>
           ))}
           </motion.div>

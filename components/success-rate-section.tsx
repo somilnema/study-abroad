@@ -8,7 +8,7 @@ const successData = [
   { university: "", logo: "/images/tum-logo.svg", before: "8%", after: "88%", multiplier: "11x" },
   { university: "", logo: "/images/rwth-aachen.png", before: "6%", after: "98%", multiplier: "16x" },
   { university: "", logo: "/images/university-of-seoul.jpeg", before: "15%", after: "88%", multiplier: "6x" },
-  { university: "", logo: "/images/yonsei-university.png", before: "6%", after: "22%", multiplier: "4x" },
+  { university: "", logo: "/images/neues-fau.png", before: "6%", after: "22%", multiplier: "4x" },
   { university: "", logo: "/images/university-of-bonn.png", before: "14%", after: "31%", multiplier: "2x" },
   { university: "", logo: "/images/imperial-college-london.png", before: "12%", after: "28%", multiplier: "2x" },
   { university: "", logo: "/images/london-school-of-economics.svg", before: "8%", after: "24%", multiplier: "3x" },
@@ -22,37 +22,37 @@ const successData = [
 const SuccessCard = memo(({ item, index }: { item: any, index: number }) => (
   <div
     key={index}
-    className="bg-white rounded-3xl p-10 shadow-lg w-[330px] h-[400px] flex-shrink-0 hover:shadow-2xl transition-all duration-700 ease-out border border-gray-100 hover:border-red-200 hover:scale-[1.02]"
+    className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg w-[280px] sm:w-[300px] lg:w-[330px] h-[320px] sm:h-[360px] lg:h-[400px] flex-shrink-0 hover:shadow-2xl transition-all duration-700 ease-out border border-gray-100 hover:border-red-200 hover:scale-[1.02]"
   >
     {/* Top: Centered Logo */}
-    <div className="flex justify-center mb-8">
+    <div className="flex justify-center mb-6 sm:mb-8">
       <img
         src={item.logo || "/placeholder.svg"}
         alt={`${item.university} logo`}
-        className="h-16 w-auto object-contain opacity-90"
+        className="h-12 sm:h-14 lg:h-16 w-auto object-contain opacity-90"
         loading="lazy"
         decoding="async"
       />
     </div>
 
     {/* Center: Big Multiplier */}
-    <div className="text-center mb-10">
-      <span className="text-red-600 font-bold text-5xl block mb-3">
+    <div className="text-center mb-6 sm:mb-8 lg:mb-10">
+      <span className="text-red-600 font-bold text-3xl sm:text-4xl lg:text-5xl block mb-2 sm:mb-3">
         {item.multiplier}
       </span>
-      <p className="text-base text-gray-600 font-medium">Chances</p>
+      <p className="text-sm sm:text-base text-gray-600 font-medium">Chances</p>
     </div>
 
     {/* Bottom: Rates */}
     <div className="flex justify-between text-center mt-auto">
-      <div className="flex-1 px-2">
-        <p className="text-3xl font-bold text-gray-700 mb-3">{item.before}</p>
+      <div className="flex-1 px-1 sm:px-2">
+        <p className="text-2xl sm:text-3xl font-bold text-gray-700 mb-2 sm:mb-3">{item.before}</p>
         <p className="text-xs text-gray-500 leading-tight">
           General student <br /> Admissions Rate
         </p>
       </div>
-      <div className="flex-1 px-2">
-        <p className="text-3xl font-bold text-green-600 mb-3">{item.after}</p>
+      <div className="flex-1 px-1 sm:px-2">
+        <p className="text-2xl sm:text-3xl font-bold text-green-600 mb-2 sm:mb-3">{item.after}</p>
         <p className="text-xs text-gray-500 leading-tight">
           Our Students <br /> Admissions Rate
         </p>
@@ -117,13 +117,13 @@ export function SuccessRateSection() {
   return (
     <section id="success-rates" ref={targetRef} className="relative h-[300vh] bg-white">
       {/* Guidance text at the top */}
-      <div className="absolute top-16 left-0 right-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="absolute top-8 sm:top-12 lg:top-16 left-0 right-0 z-10">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="text-center">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               The Right Guidance Makes All the Difference.
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
               Our students have a proven track record of securing admits at top universities worldwide.
             </p>
           </div>
@@ -134,8 +134,8 @@ export function SuccessRateSection() {
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
         <motion.div
           ref={containerRef}
-          style={{ x, willChange: 'transform' }}
-          className="flex space-x-6 pl-10 pr-20"
+          style={{ x, willChange: 'transform', gap: '1.5rem' }}
+          className="flex pl-4 sm:pl-6 lg:pl-10 pr-4 sm:pr-8 lg:pr-20"
         >
           {memoizedSuccessData.map((item, index) => (
             <SuccessCard key={index} item={item} index={index} />
