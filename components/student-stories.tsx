@@ -13,7 +13,6 @@ const stories = [
     story: "I always thought my tech background might hold me back in MBA admissions. With their help, I learned how to position my skills as an asset—and that changed everything.",
     image: "/testimonial/Sahil (1).png",
     logo: "/images/rwth-aachen.png",
-    
     help: [
       "Highlighted his tech-to-business transition with real-world projects.",
       "Strengthened leadership narrative with industry-focused case studies.",
@@ -21,24 +20,11 @@ const stories = [
     ],
   },
   {
-    name: "Palak J",
-    university: "Cornell University",
-    program: "Master of Health Administration",
-    story: "Cornell always felt out of reach. Their team helped me build a profile that reflected both my academic strength and my passion for healthcare leadership.",
-    image: "/asian-female-student-portrait.jpg",
-    logo: "/images/columbia-university.png",
-    help: [
-      "Showcased healthcare volunteering to demonstrate impact.",
-      "Connected past academic work to future goals in public health.",
-      "Guided scholarship essays with a strong purpose-driven angle.",
-    ],
-  },
-  {
     name: "Pearika C",
     university: "Columbia University",
     program: "MSc in Actuarial Science",
     story: "Columbia's actuarial program is highly selective. With expert guidance, I could show my analytical edge while still keeping my essays personal and authentic.",
-    image: "/caucasian-female-student-portrait.jpg",
+    image: "/testimonial/Pearika.png",
     logo: "/images/columbia-university.png",
     help: [
       "Strengthened quantitative profile with specialized coursework.",
@@ -64,7 +50,7 @@ const stories = [
     university: "Tampere University of Applied Sciences",
     program: "Diploma in Systemic Approach to Entrepreneurship",
     story: "I thought my unconventional background would be a barrier. Instead, it became my biggest strength after they helped me reframe it strategically.",
-    image: "/testimonial/Pankaj (1).png",
+    image: "/testimonial/Pankaj P.png",
     logo: "/logos/tampere-university.png",
     help: [
       "Positioned his entrepreneurial experiments as learning milestones.",
@@ -92,10 +78,24 @@ const stories = [
     story: "I always thought my profile was too niche. Their team helped me show that niche as a unique advantage for my dream program.",
     image: "/testimonial/Nikhil B.png",
     logo: "/logos/deggendorf-university.png",
+    classname: "scale-x-[-1]",
     help: [
       "Highlighted advanced computing projects to stand out.",
       "Strengthened profile with published research recommendations.",
       "Positioned career goals within Europe's growing quantum-tech ecosystem.",
+    ],
+  },
+  {
+    name: "Mona M",
+    university: "Northeastern University",
+    program: "MS in Artificial Intelligence",
+    story: "I knew AI is competitive, and I wasn't sure my profile stood out. Their guidance helped me connect my technical strengths with my vision for the future—making my application not just strong, but unique.",
+    image: "/testimonial/Mona.png",
+    logo: "/images/nyu.png",
+    help: [
+      "Showcased her strong math and coding foundation through AI-focused academic and personal projects.",
+      "Built a compelling story around her passion for using AI in real-world problem solving.",
+      "Strengthened her SOP and LORs to align with Northeastern's research-driven and application-oriented AI program.",
     ],
   },
 ]
@@ -115,104 +115,141 @@ export function StudentStoriesHorizontal() {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // Memoize expensive calculations
-  const { cardWidth, cardHeight, gap, totalContentWidth, totalScrollWidth } = useMemo(() => {
-    const cardWidth = 550
-    const cardHeight = 600
-    const gap = 40
-    const totalContentWidth = stories.length * (cardWidth + gap) - gap
-    const totalScrollWidth = Math.max(totalContentWidth - viewportWidth + 100, 0)
+  // Memoize expensive calculations with responsive dimensions
+  const { cardWidth, cardHeight, gap, totalContentWidth, totalScrollWidth, sectionHeight } = useMemo(() => {
+    // Responsive card dimensions
+    const isMobile = viewportWidth < 640
+    const isTablet = viewportWidth < 1024
     
-    return { cardWidth, cardHeight, gap, totalContentWidth, totalScrollWidth }
+    const cardWidth = isMobile ? 300 : isTablet ? 380 : 480
+    const cardHeight = isMobile ? 500 : isTablet ? 450 : 550
+    const gap = isMobile ? 16 : isTablet ? 24 : 32
+    const sectionHeight = isMobile ? 180 : isTablet ? 350 : 500
+    const totalContentWidth = stories.length * (cardWidth + gap) - gap
+    const totalScrollWidth = Math.max(totalContentWidth - viewportWidth + (isMobile ? 20 : 100), 0)
+    
+    return { cardWidth, cardHeight, gap, totalContentWidth, totalScrollWidth, sectionHeight }
   }, [viewportWidth])
 
   // Use a slower but complete scroll - ensure all cards are visible
   const x = useTransform(scrollYProgress, [0, 1], [0, -totalScrollWidth])
 
   return (
-    <section id="success-stories" ref={targetRef} className="relative h-[600vh]">
+    <section id="success-stories" ref={targetRef} className="relative" style={{ height: `${sectionHeight}vh` }}>
       {/* Sticky container with proper spacing for heading */}
-        <div className="sticky top-0 flex h-screen items-start overflow-hidden pt-10 pb-2">
-          <div className="w-full">
-            {/* Tagline */}
-            <div className="text-center mb-6 px-8">
-              <h2 className="text-xl md:text-3xl font-bold text-black text-balance leading-tight">
-                From <span className="text-red-600">Applications</span> to <span className="text-red-600">Admits</span> — See How Our Students Succeeded with Expert Support.
-              </h2>
-            </div>
-            
-            <motion.div 
-              style={{ x, willChange: 'transform' }} 
-              className="flex space-x-10 pl-8"
-            >
-          {stories.map((story, index) => (
-            <Card
-              key={index}
-              className="relative rounded-2xl shadow-lg bg-white flex-shrink-0 overflow-hidden"
-              style={{ width: `${cardWidth}px`, height: `${cardHeight}px` }}
-            >
-              <div className="p-6 h-full flex flex-col bg-white relative">
-                {/* Header */}
-                <div className="flex justify-between items-start mb-5">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-red-700 mb-2">{story.name}</h3>
-                    <p className="text-gray-700 text-sm font-medium leading-relaxed pr-4">
-                      {story.program}
-                    </p>
+      <div className="sticky top-0 flex items-start overflow-hidden pt-1 sm:pt-2 md:pt-3" style={{ height: `${viewportWidth < 640 ? Math.max(cardHeight + 40, 450) : Math.max(cardHeight + 80, 500)}px`, paddingBottom: `${viewportWidth < 640 ? '0px' : '4px'}` }}>
+        <div className="w-full">
+          {/* Tagline */}
+          <div className="text-center mb-1 sm:mb-2 px-4 sm:px-6 lg:px-8" style={{ marginBottom: `${viewportWidth < 640 ? '4px' : '8px'}` }}>
+            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-black text-balance leading-tight">
+              From <span className="text-red-600">Applications</span> to <span className="text-red-600">Admits</span> — See How Our Students Succeeded with Expert Support.
+            </h2>
+          </div>
+          
+          <motion.div 
+            style={{ x, willChange: 'transform', gap: `${gap}px` }} 
+            className="flex pl-4 sm:pl-6 lg:pl-8"
+          >
+            {stories.map((story, index) => (
+              <Card
+                key={index}
+                className="relative rounded-xl sm:rounded-2xl shadow-lg bg-white flex-shrink-0 overflow-hidden"
+                style={{ width: `${cardWidth}px`, height: `${cardHeight}px` }}
+              >
+                <div className="h-full flex flex-col bg-white relative" style={{ padding: `${viewportWidth < 640 ? Math.max(cardWidth * 0.01, 4) : Math.max(cardWidth * 0.015, 8)}px` }}>
+                  {/* Header */}
+                  <div className="flex justify-between items-start" style={{ marginBottom: `${viewportWidth < 640 ? Math.max(cardHeight * 0.01, 4) : Math.max(cardHeight * 0.015, 8)}px` }}>
+                    <div className="flex-1 pr-2">
+                      <h3 className="font-bold text-red-700" style={{ 
+                        fontSize: `${Math.max(cardWidth * 0.042, 14)}px`,
+                        marginBottom: `${Math.max(cardHeight * 0.01, 4)}px`
+                      }}>{story.name}</h3>
+                      <p className="text-gray-700 font-medium leading-relaxed" style={{ 
+                        fontSize: `${Math.max(cardWidth * 0.035, 10)}px`
+                      }}>
+                        {story.program}
+                      </p>
+                    </div>
+                    <div className="flex-shrink-0" style={{ 
+                      width: `${Math.max(cardWidth * 0.25, 60)}px`,
+                      height: `${Math.max(cardHeight * 0.12, 40)}px`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <img
+                        src={story.logo}
+                        alt={`${story.university} logo`}
+                        className="object-contain max-w-full max-h-full"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
                   </div>
+
+                  {/* How We Helped */}
+                  <div className="flex-1" style={{ marginBottom: `${viewportWidth < 640 ? Math.max(cardHeight * 0.01, 4) : Math.max(cardHeight * 0.015, 8)}px` }}>
+                    <h4 className="text-black font-semibold" style={{ 
+                      fontSize: `${Math.max(cardWidth * 0.04, 12)}px`,
+                      marginBottom: `${Math.max(cardHeight * 0.015, 8)}px`
+                    }}>How We Helped:</h4>
+                    <ul style={{ gap: `${Math.max(cardHeight * 0.01, 6)}px` }} className="flex flex-col">
+                      {story.help.map((point, i) => (
+                        <li key={i} className="flex items-start text-gray-700 leading-relaxed" style={{ 
+                          fontSize: `${Math.max(cardWidth * 0.032, 10)}px`
+                        }}>
+                          <Sparkles className="text-red-600 mt-1 flex-shrink-0" style={{ 
+                            height: `${Math.max(cardWidth * 0.04, 12)}px`,
+                            width: `${Math.max(cardWidth * 0.04, 12)}px`,
+                            marginRight: `${Math.max(cardWidth * 0.02, 6)}px`
+                          }} />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Quote */}
+                  <div className="relative text-gray-700 leading-relaxed mt-auto" style={{ 
+                    fontSize: `${Math.max(cardWidth * 0.03, 10)}px`,
+                    paddingRight: `${Math.max(cardWidth * 0.35, 70)}px`
+                  }}>
+                    <Quote className="text-red-600 inline-block mb-1" style={{ 
+                      height: `${Math.max(cardWidth * 0.05, 16)}px`,
+                      width: `${Math.max(cardWidth * 0.05, 16)}px`,
+                      marginRight: `${Math.max(cardWidth * 0.02, 6)}px`
+                    }} />
+                    <span className="italic">{story.story}</span>
+                  </div>
+                </div>
+
+                {/* Red corner background */}
+                <div className="absolute bottom-0 right-0 bg-red-600" style={{
+                  width: `${Math.max(cardWidth * 0.4, 80)}px`,
+                  height: `${Math.max(cardHeight * 0.4, 80)}px`,
+                  clipPath: 'polygon(100% 0, 100% 100%, 0 100%)'
+                }}></div>
+                
+                {/* Student photo */}
+                <div className={`absolute bottom-0 right-0 z-20 ${story.classname || ""}`} style={{
+                  width: `${Math.max(cardWidth * 0.35, 140)}px`,
+                  height: `${Math.max(cardHeight * 0.5, 100)}px`,
+                  overflow: "hidden",
+                  justifyContent: "center"
+                }}>
                   <img
-                    src={story.logo}
-                    alt={`${story.university} logo`}
-                    className="h-14 object-contain flex-shrink-0"
+                    src={story.image}
+                    alt={story.name}
+                    className="w-full h-full object-cover object-bottom"
                     loading="lazy"
                     decoding="async"
                   />
                 </div>
-
-                {/* How We Helped */}
-                <div className="mb-5 flex-1">
-                  <h4 className="text-black font-semibold mb-3 text-lg">How We Helped:</h4>
-                  <ul className="space-y-3">
-                    {story.help.map((point, i) => (
-                      <li key={i} className="flex items-start text-base text-gray-700 leading-relaxed">
-                        <Sparkles className="h-5 w-5 text-red-600 mt-1 mr-3 flex-shrink-0" />
-                        <span>{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Quote */}
-                <div className="relative text-gray-700 text-base leading-relaxed pr-56 mt-auto">
-                  <Quote className="h-8 w-8 text-red-600 inline-block mr-3 mb-1" />
-                  <span className="italic">{story.story}</span>
-                </div>
-              </div>
-
-              {/* Red corner background */}
-              <div className="absolute bottom-0 right-0 w-60 h-60 bg-red-600" style={{clipPath: 'polygon(100% 0, 100% 100%, 0 100%)'}}></div>
-              
-{/* Student photo */}
-<div className="absolute bottom-0 right-0 z-20 
-                w-44 h-60
-                md:w-56 md:h-76 
-                lg:w- lg:h-">
-  <img
-    src={story.image}
-    alt={story.name}
-    className="w-full h-full object-contain"  // keeps full image visible
-    loading="lazy"
-    decoding="async"
-  />
-</div>
-
-            </Card>
-          ))}
+              </Card>
+            ))}
           </motion.div>
-          </div>
         </div>
-      
-
+      </div>
     </section>
   )
 }
